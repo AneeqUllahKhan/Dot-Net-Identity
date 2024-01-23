@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using TodoApp.Models.Domain;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -11,6 +12,8 @@ public class ApplicationDBContext : IdentityDbContext<IdentityUser>
         : base(options)
     {
     }
+
+    public DbSet<Employee> Employees { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
