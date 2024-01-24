@@ -1,0 +1,28 @@
+﻿@model List<TodoApp.Models.Domain.Todo>
+
+@{
+}
+<div class="container mt-3 mb-3">
+    <h1 class="fw-bolder text-center">Tasks</h1>
+   <a class="btn btn-warning" asp-controller="Todos" asp-action="Add">Add</a>
+</div>
+
+<table class="table table-striped" border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Task</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var todos in Model)
+        {
+            <tr>
+                <td>@todos.Id</td>
+                <td>@todos.Task</td>
+                <td><a href="Todos/View/@todos.Id" class="btn btn-success">View</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -15,6 +15,8 @@ public class ApplicationDBContext : IdentityDbContext<IdentityUser>
 
     public DbSet<Employee> Employees { get; set; }
 
+    public DbSet<Todo> Todos { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

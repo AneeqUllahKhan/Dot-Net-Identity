@@ -9,11 +9,11 @@ using System.Security.Claims;
 namespace TodoApp.Controllers
 {
 [Authorize]
-    public class EmployeesController : Controller
+    public class TodosController : Controller
     {
         private readonly ApplicationDBContext dbContext;
 
-        public EmployeesController(ApplicationDBContext dbContext)
+        public TodosController(ApplicationDBContext dbContext)
         {
          this.dbContext = dbContext;
         }
@@ -25,11 +25,11 @@ namespace TodoApp.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             // Retrieve only the records associated with the current user
-            var employees = await dbContext.Employees
+            var todos = await dbContext.Todos
                 .Where(e => e.UserId == userId)
                 .ToListAsync();
 
-            return View(employees);
+            return View(todos);
 
         }
 
@@ -43,23 +43,19 @@ namespace TodoApp.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> Add(AddEmployeeViewModel addemployeeRequest ) {
+        public async Task<IActionResult> Add(AddTodoViewModel addtodoRequest ) {
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var employee = new Models.Domain.Employee()
+            var todos = new Models.Domain.Todo()
             {
                 Id = Guid.NewGuid(),
-                Name = addemployeeRequest.Name,
-                Email = addemployeeRequest.Email,
-                Salary = addemployeeRequest.Salary,
-                Department = addemployeeRequest.Department,
-                DateOfBirth = addemployeeRequest.DateOfBirth,
+                Task = addtodoRequest.Task,
                 // Set the UserId property
                 UserId = userId
             };
 
-            await dbContext.Employees.AddAsync(employee);
+            await dbContext.Todos.AddAsync(todos);
             await dbContext.SaveChangesAsync();
 
             return RedirectToAction("Index");
@@ -71,18 +67,14 @@ namespace TodoApp.Controllers
         public async Task<IActionResult> View(Guid id) 
         {
 
-            var employee = await dbContext.Employees.FirstOrDefaultAsync(x => x.Id == id);
+            var todos = await dbContext.Todos.FirstOrDefaultAsync(x => x.Id == id);
 
-            if (employee != null) {
+            if (todos != null) {
 
-                var viewModel = new UpdateEmployeeViewModel()
+                var viewModel = new UpdateTodoViewModel()
                 {
-                    Id = employee.Id,
-                    Name = employee.Name,
-                    Email = employee.Email,
-                    Salary = employee.Salary,
-                    Department = employee.Department,
-                    DateOfBirth = employee.DateOfBirth,
+                    Id = todos.Id,
+                    Task = todos.Task
                 };
                 return await Task.Run(()=>View("View", viewModel));
             }
@@ -91,16 +83,12 @@ namespace TodoApp.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> View(UpdateEmployeeViewModel model)
+        public async Task<IActionResult> View(UpdateTodoViewModel model)
         {
-            var employee = await dbContext.Employees.FindAsync(model.Id);
-            if (employee != null)
+            var todos = await dbContext.Todos.FindAsync(model.Id);
+            if (todos != null)
             {
-                employee.Name = model.Name;
-                employee.Email = model.Email;
-                employee.Salary = model.Salary;
-                employee.DateOfBirth = model.DateOfBirth;
-                employee.Department = model.Department;
+                todos.Task = model.Task;
 
                 await dbContext.SaveChangesAsync();
                 
@@ -114,12 +102,12 @@ namespace TodoApp.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Delete(UpdateEmployeeViewModel model)
+        public async Task<IActionResult> Delete(UpdateTodoViewModel model)
         {
-            var employee =  await dbContext.Employees.FindAsync(model.Id);
-            if (employee != null)
+            var todos =  await dbContext.Todos.FindAsync(model.Id);
+            if (todos != null)
             {
-                dbContext.Employees.Remove(employee);
+                dbContext.Todos.Remove(todos);
                 await dbContext.SaveChangesAsync();
 
                 return RedirectToAction("Index");

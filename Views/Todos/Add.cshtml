@@ -1,0 +1,15 @@
+﻿@model TodoApp.Models.AddTodoViewModel
+
+
+@{
+}
+
+<h1 class="mt-3 mb-3 fw-bolder text-center">Add Task</h1>
+<form method="post" action="Add">
+    <div class="mb-3">
+        <label for="" class="form-label">Task</label>
+        <input type="text" class="form-control" asp-for="Task" >
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
